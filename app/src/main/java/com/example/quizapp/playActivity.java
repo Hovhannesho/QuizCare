@@ -92,14 +92,13 @@ public class playActivity extends AppCompatActivity {
 
         btn_next.setOnClickListener(view -> {
             new Handler().postDelayed(() -> {
-                // Check if the user has selected an answer
                 if (valueChoose.isEmpty()) {
                     Toast.makeText(playActivity.this, "Please select an answer", Toast.LENGTH_SHORT).show();
-                    return; // Don't proceed further until an answer is selected
+                    return; 
                 }
 
                 if (currentQuestion != question_list.length - 1) {
-                    // Proceed to the next question only if an answer is selected
+
                     currentQuestion = currentQuestion + 1;
                     remplirData();
                     valueChoose = "";
@@ -108,7 +107,7 @@ public class playActivity extends AppCompatActivity {
                     btn_choose3.setBackgroundResource(R.drawable.background_btn_choose);
                     btn_choose4.setBackgroundResource(R.drawable.background_btn_choose);
                 } else {
-                    // This block is executed if it's the last question
+
                     Intent intent = new Intent(playActivity.this, ResulteActivity.class);
                     intent.putExtra("Result", scorePlayer);
                     startActivity(intent);
