@@ -21,27 +21,11 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Intent intent = getIntent();
-        if (intent != null) {
-            String languageCode = intent.getStringExtra("language");
-            if (languageCode != null && !languageCode.isEmpty()) {
-                setAppLocale(languageCode);
-                // Reload the activity to apply language change immediately
-                recreate();
-            }
-        }
 
-        TextView textView = findViewById(R.id.textView);
-        textView.setText(getString(R.string.hello_world));
+
     }
 
-    private void setAppLocale(String languageCode) {
-        Locale locale = new Locale(languageCode);
-        Locale.setDefault(locale);
-        Configuration config = new Configuration();
-        config.locale = locale;
-        getResources().updateConfiguration(config, getBaseContext().getResources().getDisplayMetrics());
-    }
+
 
 
 
