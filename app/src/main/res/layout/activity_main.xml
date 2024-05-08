@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/primary_color"
+    android:background="@color/dark_red"
     tools:context=".MainActivity">
 
 
@@ -12,7 +12,7 @@
         android:id="@+id/textView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="RANANGANAM"
+        android:text="Car Game"
         android:textSize="35sp"
         android:textColor="@color/white"
         android:textStyle="bold"
@@ -76,5 +76,20 @@
 
             android:padding="8dp"
             android:text="exit" />
+
+        <Button
+            android:id="@+id/btn_language"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:background="@drawable/background_btn"
+            android:fontFamily="@font/chakrapetchbold"
+            android:onClick="main_btn"
+            android:padding="8dp"
+            android:text="exit"
+            android:textColor="@color/primary_color"
+
+            android:textSize="20sp"
+            android:textStyle="bold" />
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>
