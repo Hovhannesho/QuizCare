@@ -44,6 +44,7 @@ public class playActivity extends AppCompatActivity {
     int currentQuestion = 0;
     int scorePlayer = 0;
     boolean isclickBtn = false;
+    boolean isAnswerChecked = false;
     String valueChoose = "";
     Button btn_click;
 
@@ -71,6 +72,7 @@ public class playActivity extends AppCompatActivity {
                 view -> {
                     if (isclickBtn) {
                         isclickBtn = false;
+                        isAnswerChecked = true;
 
                         if (!valueChoose.equals(correct_list[currentQuestion])) {
 
@@ -83,7 +85,6 @@ public class playActivity extends AppCompatActivity {
                             scorePlayer++;
                         }
 
-
                     } else {
                         Toast.makeText(playActivity.this, "Enter the answer", Toast.LENGTH_LONG).show();
                     }
@@ -94,7 +95,12 @@ public class playActivity extends AppCompatActivity {
             new Handler().postDelayed(() -> {
                 if (valueChoose.isEmpty()) {
                     Toast.makeText(playActivity.this, "Please select an answer", Toast.LENGTH_SHORT).show();
-                    return; 
+                    return;
+                }
+
+                if (!isAnswerChecked) {
+                    Toast.makeText(playActivity.this, "Please check your answer", Toast.LENGTH_SHORT).show();
+                    return;
                 }
 
                 if (currentQuestion != question_list.length - 1) {
@@ -102,6 +108,7 @@ public class playActivity extends AppCompatActivity {
                     currentQuestion = currentQuestion + 1;
                     remplirData();
                     valueChoose = "";
+                    isAnswerChecked = false;
                     btn_choose1.setBackgroundResource(R.drawable.background_btn_choose);
                     btn_choose2.setBackgroundResource(R.drawable.background_btn_choose);
                     btn_choose3.setBackgroundResource(R.drawable.background_btn_choose);
@@ -116,10 +123,6 @@ public class playActivity extends AppCompatActivity {
 
             }, 200);
         });
-
-
-
-
 
     }
 
