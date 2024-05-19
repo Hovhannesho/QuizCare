@@ -4,7 +4,6 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -36,10 +35,8 @@ public class playActivity extends AppCompatActivity {
     };
     String[] correct_list = {"1908", "1953", "1938", "1963", "1966", "1972", "1975", "1964", "1972", "1986", "1970"};
 
-
     TextView cpt_question, text_question;
-    Button btn_choose1, btn_choose2, btn_choose3, btn_choose4, btn_next, btn_check;
-
+    Button btn_choose1, btn_choose2, btn_choose3, btn_choose4, btn_check;
 
     int currentQuestion = 0;
     int scorePlayer = 0;
@@ -47,6 +44,7 @@ public class playActivity extends AppCompatActivity {
     boolean isAnswerChecked = false;
     String valueChoose = "";
     Button btn_click;
+    boolean[] answeredQuestions;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,71 +57,53 @@ public class playActivity extends AppCompatActivity {
         btn_choose2 = findViewById(R.id.btn_choose2);
         btn_choose3 = findViewById(R.id.btn_choose3);
         btn_choose4 = findViewById(R.id.btn_choose4);
-        btn_next = findViewById(R.id.btn_next);
 
+        answeredQuestions = new boolean[question_list.length];
 
         findViewById(R.id.image_back).setOnClickListener(
                 a -> finish()
         );
         remplirData();
 
+        btn_check.setOnClickListener(view -> {
+            if (isclickBtn && !isAnswerChecked) {
+                isclickBtn = false;
+                isAnswerChecked = true;
 
-        btn_check.setOnClickListener(
-                view -> {
-                    if (isclickBtn) {
-                        isclickBtn = false;
-                        isAnswerChecked = true;
-
-                        if (!valueChoose.equals(correct_list[currentQuestion])) {
-
-                            Toast.makeText(playActivity.this, "Incorrect. Correct answer is: " + correct_list[currentQuestion], Toast.LENGTH_LONG).show();
-                            btn_click.setBackgroundResource(R.drawable.background_btn_erreur);
-                        } else {
-
-                            Toast.makeText(playActivity.this, "Correct", Toast.LENGTH_LONG).show();
-                            btn_click.setBackgroundResource(R.drawable.background_btn_correct);
-                            scorePlayer++;
-                        }
-
-                    } else {
-                        Toast.makeText(playActivity.this, "Enter the answer", Toast.LENGTH_LONG).show();
-                    }
-                }
-        );
-
-        btn_next.setOnClickListener(view -> {
-            new Handler().postDelayed(() -> {
-                if (valueChoose.isEmpty()) {
-                    Toast.makeText(playActivity.this, "Please select an answer", Toast.LENGTH_SHORT).show();
-                    return;
+                if (!valueChoose.equals(correct_list[currentQuestion])) {
+                    Toast.makeText(playActivity.this, "Incorrect. Correct answer is: " + correct_list[currentQuestion], Toast.LENGTH_LONG).show();
+                    btn_click.setBackgroundResource(R.drawable.background_btn_erreur1);
+                    highlightCorrectAnswer();
+                } else {
+                    Toast.makeText(playActivity.this, "Correct", Toast.LENGTH_LONG).show();
+                    btn_click.setBackgroundResource(R.drawable.background_btn_correct1);
+                    scorePlayer++;
                 }
 
-                if (!isAnswerChecked) {
-                    Toast.makeText(playActivity.this, "Please check your answer", Toast.LENGTH_SHORT).show();
-                    return;
-                }
+                // Mark the question as answered and disable the buttons
+                answeredQuestions[currentQuestion] = true;
+                disableButtons();
 
+                // Change button text to "Next"
+                btn_check.setText("Next");
+            } else if (isAnswerChecked) {
+                // Move to the next question
                 if (currentQuestion != question_list.length - 1) {
-
-                    currentQuestion = currentQuestion + 1;
+                    currentQuestion++;
                     remplirData();
                     valueChoose = "";
                     isAnswerChecked = false;
-                    btn_choose1.setBackgroundResource(R.drawable.background_btn_choose);
-                    btn_choose2.setBackgroundResource(R.drawable.background_btn_choose);
-                    btn_choose3.setBackgroundResource(R.drawable.background_btn_choose);
-                    btn_choose4.setBackgroundResource(R.drawable.background_btn_choose);
+                    btn_check.setText("Check");
                 } else {
-
                     Intent intent = new Intent(playActivity.this, ResulteActivity.class);
                     intent.putExtra("Result", scorePlayer);
                     startActivity(intent);
                     finish();
                 }
-
-            }, 200);
+            } else {
+                Toast.makeText(playActivity.this, "Please select an answer", Toast.LENGTH_LONG).show();
+            }
         });
-
     }
 
     void remplirData() {
@@ -135,26 +115,61 @@ public class playActivity extends AppCompatActivity {
         btn_choose3.setText(choose_list[4 * currentQuestion + 2]);
         btn_choose4.setText(choose_list[4 * currentQuestion + 3]);
 
+        // Reset button backgrounds and states
+        resetButtons();
     }
 
     public void ClickChoose(View view) {
         btn_click = (Button) view;
 
         if (isclickBtn) {
-            btn_choose1.setBackgroundResource(R.drawable.background_btn_choose);
-            btn_choose2.setBackgroundResource(R.drawable.background_btn_choose);
-            btn_choose3.setBackgroundResource(R.drawable.background_btn_choose);
-            btn_choose4.setBackgroundResource(R.drawable.background_btn_choose);
+            resetButtons();
         }
         chooseBtn();
-
-
     }
 
     void chooseBtn() {
-
-        btn_click.setBackgroundResource(R.drawable.background_btn_choose_color);
+        btn_click.setBackgroundResource(R.drawable.background_btn_choose_color1);
         isclickBtn = true;
         valueChoose = btn_click.getText().toString();
+    }
+
+    void resetButtons() {
+        btn_choose1.setBackgroundResource(R.drawable.background_btn_default);
+        btn_choose2.setBackgroundResource(R.drawable.background_btn_default);
+        btn_choose3.setBackgroundResource(R.drawable.background_btn_default);
+        btn_choose4.setBackgroundResource(R.drawable.background_btn_default);
+
+        // Disable buttons if the question is already answered
+        if (answeredQuestions[currentQuestion]) {
+            btn_choose1.setEnabled(false);
+            btn_choose2.setEnabled(false);
+            btn_choose3.setEnabled(false);
+            btn_choose4.setEnabled(false);
+        } else {
+            btn_choose1.setEnabled(true);
+            btn_choose2.setEnabled(true);
+            btn_choose3.setEnabled(true);
+            btn_choose4.setEnabled(true);
+        }
+    }
+
+    void disableButtons() {
+        btn_choose1.setEnabled(false);
+        btn_choose2.setEnabled(false);
+        btn_choose3.setEnabled(false);
+        btn_choose4.setEnabled(false);
+    }
+
+    void highlightCorrectAnswer() {
+        if (btn_choose1.getText().toString().equals(correct_list[currentQuestion])) {
+            btn_choose1.setBackgroundResource(R.drawable.background_btn_correct1);
+        } else if (btn_choose2.getText().toString().equals(correct_list[currentQuestion])) {
+            btn_choose2.setBackgroundResource(R.drawable.background_btn_correct1);
+        } else if (btn_choose3.getText().toString().equals(correct_list[currentQuestion])) {
+            btn_choose3.setBackgroundResource(R.drawable.background_btn_correct1);
+        } else if (btn_choose4.getText().toString().equals(correct_list[currentQuestion])) {
+            btn_choose4.setBackgroundResource(R.drawable.background_btn_correct1);
+        }
     }
 }
